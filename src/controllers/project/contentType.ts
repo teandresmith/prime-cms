@@ -5,7 +5,6 @@ import {
   ContentType,
   Collection,
 } from '../../interfaces/project/project.interface'
-import { isEmptyString, isUndefined } from '../../helpers/checkMethods'
 import { options } from '../statics'
 
 export const getCollectionContentTypes = async (
@@ -95,9 +94,9 @@ export const getCollectionContentTypeByName = async (
 
 export const addCollectionContentType = async (req: Request, res: Response) => {
   const { project, collection } = req.params
-  const body: ContentType = req.body
+  const newType: ContentType = req.body
 
-  if (project === undefined || collection === undefined) {
+  if (project === undefined || collection === undefined || !newType) {
     res.status(400).json({ message: options.EMPTY_PARAM })
     return
   }
@@ -119,7 +118,20 @@ export const addCollectionContentType = async (req: Request, res: Response) => {
       return
     }
 
-    foundProject?.collections?.[collectionIndex].contentType?.push(body)
+    console.log()
+
+    if (foundProject.collections[collectionIndex].contentType === undefined) {
+      res.status(400).json({ message: options.QUERY_ERROR })
+      return
+    }
+
+    if (foundProject.collections[collectionIndex].contentType === null) {
+      let info: Array<ContentType> = []
+      info.push(newType)
+      foundProject.collections[collectionIndex].contentType = info
+    } else {
+      foundProject.collections[collectionIndex].contentType.push(newType)
+    }
 
     await foundProject.save()
 
@@ -135,7 +147,7 @@ export const editCollectionContentType = async (
   res: Response
 ) => {
   const { project, collection, contentId } = req.params
-  const body: ContentType = req.body
+  const updateType: ContentType = req.body
 
   if (
     project === undefined ||
@@ -172,7 +184,16 @@ export const editCollectionContentType = async (
       return
     }
 
-    foundProject!.collections![collectionIndex].contentType![dataIndex] = body
+    if (
+      foundProject.collections[collectionIndex].contentType[dataIndex] ===
+      undefined
+    ) {
+      res.status(400).json({ message: options.QUERY_ERROR })
+      return
+    }
+
+    foundProject.collections[collectionIndex].contentType[dataIndex] =
+      updateType
 
     await foundProject.save()
 
@@ -219,6 +240,7 @@ export const deleteCollectionContentType = async (
       foundProject?.collections?.[collectionIndex].contentType === undefined
     ) {
       res.status(400).json({ message: options.QUERY_ERROR })
+      return
     }
 
     const data: Array<ContentType> = foundProject.collections[

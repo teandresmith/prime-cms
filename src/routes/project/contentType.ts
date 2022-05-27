@@ -10,12 +10,12 @@ import {
 const contentTypes = Router()
 
 contentTypes
-  .route(':project/:collection/content-type')
+  .route('/:project/:collection/content-type')
   .get(getCollectionContentTypes)
   .post(addCollectionContentType)
 
 contentTypes
-  .route(':project/:collection/content-type/:contentId')
+  .route('/:project/:collection/content-type/:contentId')
   .get(getCollectionContentTypeByName)
   .patch(editCollectionContentType)
   .delete(deleteCollectionContentType)

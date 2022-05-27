@@ -124,7 +124,7 @@ export const addCollectionContentData = async (req: Request, res: Response) => {
       return
     }
 
-    if (foundProject?.collections?.[collectionIndex]?.data !== undefined) {
+    if (foundProject?.collections?.[collectionIndex]?.data === undefined) {
       res.status(400).json({ message: options.QUERY_ERROR })
       return
     }

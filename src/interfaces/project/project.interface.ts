@@ -16,6 +16,6 @@ export interface ContentType {
 }
 
 export interface Data {
-  _id: string
+  id: string
   [key: string]: any
 }
