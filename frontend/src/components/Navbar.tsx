@@ -25,66 +25,62 @@ const Navbar = (props: Props) => {
         >
           prime
         </Button>
-        <Box component='div'>
-          <Button
-            component={Link as React.ElementType<any>}
-            to={`/content-management`}
-            sx={{
-              color: 'white',
-              fontSize: '18px',
-              textTransform: 'lowercase',
-              width: '100%',
-            }}
-          >
-            CManage
-          </Button>
-          <Button
-            component={Link as React.ElementType<any>}
-            to={`/content-type`}
-            sx={{
-              color: 'white',
-              fontSize: '18px',
-              textTransform: 'lowercase',
-              width: '100%',
-            }}
-          >
-            CType
-          </Button>
-          <Button
-            component={Link as React.ElementType<any>}
-            to='/databases'
-            sx={{
-              color: 'white',
-              fontSize: '18px',
-              textTransform: 'lowercase',
-              width: '100%',
-            }}
-          >
-            DBs
-          </Button>
-          <Button
-            component={Link as React.ElementType<any>}
-            to={`/settings?tab=projects`}
-            sx={{
-              color: 'white',
-              fontSize: '18px',
-              textTransform: 'lowercase',
-              width: '100%',
-            }}
-          >
-            Setting
-          </Button>
-          <Button
-            sx={{
-              color: 'white',
-              fontSize: '18px',
-              textTransform: 'lowercase',
-              width: '100%',
-            }}
-          >
-            {currentProject}
-          </Button>
-        </Box>
+        <Stack
+          direction='column'
+          justifyContent={'space-between'}
+          sx={{ width: '100%', height: '90vh' }}
+        >
+          <Box component='div'>
+            <Button
+              component={Link as React.ElementType<any>}
+              to={`/content-management`}
+              sx={{
+                color: 'white',
+                fontSize: '18px',
+                textTransform: 'lowercase',
+                width: '100%',
+              }}
+            >
+              CManage
+            </Button>
+            <Button
+              component={Link as React.ElementType<any>}
+              to={`/content-type`}
+              sx={{
+                color: 'white',
+                fontSize: '18px',
+                textTransform: 'lowercase',
+                width: '100%',
+              }}
+            >
+              CType
+            </Button>
+            <Button
+              component={Link as React.ElementType<any>}
+              to={`/settings?tab=projects`}
+              sx={{
+                color: 'white',
+                fontSize: '18px',
+                textTransform: 'lowercase',
+                width: '100%',
+              }}
+            >
+              Setting
+            </Button>
+          </Box>
+          <Box component='div'>
+            <Button
+              sx={{
+                color: 'white',
+                fontSize: '18px',
+                textTransform: 'lowercase',
+                width: '100%',
+              }}
+            >
+              {currentProject}
+            </Button>
+          </Box>
+        </Stack>
       </Stack>
     </Box>
   )

@@ -4,47 +4,59 @@ export const projectAPI = createApi({
   reducerPath: 'projectAPI',
   baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:5000' }),
   endpoints: (builder) => ({
-    getProject: builder.mutation({
-      query: () => '/api/project',
+    getProjects: builder.mutation({
+      query: () => '/api/project/',
     }),
-    addContentDataInCollection: builder.mutation({
-      query: (body) => ({
-        url: '/api/project/content-management',
+
+    addProjects: builder.mutation({
+      query: (project) => ({
+        url: '/api/projects/',
         method: 'POST',
-        body: body,
+        body: project,
       }),
     }),
-    editContentDataInCollection: builder.mutation({
-      query: ({ body, itemId }) => ({
-        url: `/api/project/content-management/${itemId}`,
+
+    getProject: builder.mutation({
+      query: (projectName) => ({
+        url: `/api/projects/${projectName}`,
+        method: 'GET',
+      }),
+    }),
+
+    editProjects: builder.mutation({
+      query: ({ projectName, project }) => ({
+        url: `/api/projects/${projectName}`,
         method: 'PATCH',
-        body: body,
+        body: project,
       }),
     }),
-    deleteContentDataInCollection: builder.mutation({
-      query: (itemId) => ({
-        url: `'/api/project/content-management/${itemId}`,
+
+    deleteProjects: builder.mutation({
+      query: (projectName) => ({
+        url: `/api/projects/${projectName}`,
         method: 'DELETE',
       }),
     }),
 
-    addContentTypeInCollection: builder.mutation({
-      query: (body) => ({
-        url: '/api/project/content-type',
+    addProjectCollection: builder.mutation({
+      query: ({ project, collection }) => ({
+        url: `/api/${project}/collection`,
         method: 'POST',
-        body: body,
+        body: collection,
       }),
     }),
-    editContentTypeInCollection: builder.mutation({
-      query: ({ body, itemId }) => ({
-        url: `/api/project/content-type/${itemId}`,
+
+    editProjectCollection: builder.mutation({
+      query: ({ project, collection, collectionName }) => ({
+        url: `/api/${project}/collection/${collectionName}`,
         method: 'PATCH',
-        body: body,
+        body: collection,
       }),
     }),
-    deleteContentTypeInCollection: builder.mutation({
-      query: (itemId) => ({
-        url: `/api/project/content-type/${itemId}`,
+
+    deleteProjectCollection: builder.mutation({
+      query: ({ project, collectionName }) => ({
+        url: `/api/${project}/collection/${collectionName}`,
         method: 'DELETE',
       }),
     }),
@@ -52,11 +64,12 @@ export const projectAPI = createApi({
 })
 
 export const {
+  useGetProjectsMutation,
+  useAddProjectsMutation,
   useGetProjectMutation,
-  useAddContentDataInCollectionMutation,
-  useAddContentTypeInCollectionMutation,
-  useEditContentDataInCollectionMutation,
-  useEditContentTypeInCollectionMutation,
-  useDeleteContentDataInCollectionMutation,
-  useDeleteContentTypeInCollectionMutation,
+  useEditProjectsMutation,
+  useEditProjectCollectionMutation,
+  useDeleteProjectCollectionMutation,
+  useDeleteProjectsMutation,
+  useAddProjectCollectionMutation,
 } = projectAPI

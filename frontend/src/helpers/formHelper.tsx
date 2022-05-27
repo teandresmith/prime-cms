@@ -10,6 +10,7 @@ export const determineSizeAndComponent = (
   value?: any
 ) => {
   switch (type) {
+    case 'text':
     case 'string':
       return (
         <Grid item xs={6} key={key}>
