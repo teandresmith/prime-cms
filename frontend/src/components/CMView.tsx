@@ -16,6 +16,7 @@ const CMView = (props: Props) => {
   const currentCollection = useAppSelector(
     (state) => state.cm.currentCollection
   )
+  const currentData = useAppSelector((state) => state.cm.currentData)
 
   React.useEffect(() => {
     const id = params?.id
@@ -24,7 +25,7 @@ const CMView = (props: Props) => {
     )
 
     dispatch(setCurrentData({ data: data }))
-  }, [])
+  }, [params?.id, dispatch])
 
   return (
     <Box
@@ -34,7 +35,7 @@ const CMView = (props: Props) => {
       <Navbar />
       <Stack direction={'row'} sx={{ width: '95%' }}>
         <CManageNav />
-        <CMViewInfo />
+        {Object.keys(currentData).length !== 0 && <CMViewInfo />}
       </Stack>
     </Box>
   )

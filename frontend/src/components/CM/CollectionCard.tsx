@@ -2,7 +2,7 @@ import { Delete } from '@mui/icons-material'
 import { Checkbox, Grid, IconButton, SxProps, Theme } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import { useAppDispatch } from '../../hooks/reduxHooks'
-import { deleteCollection } from '../../redux/states/cmState'
+import { deleteCollectionEntry } from '../../redux/states/cmState'
 
 type CollectionCardProps = {
   name: string
@@ -30,8 +30,8 @@ const CollectionCard = ({
     }
   }
 
-  const handleDeleteCollection = (event: any, value: string) => {
-    dispatch(deleteCollection({ collection: value }))
+  const deleteEntry = () => {
+    dispatch(deleteCollectionEntry({ id: id }))
   }
 
   return (
@@ -55,10 +55,7 @@ const CollectionCard = ({
         </Grid>
       </Grid>
       <Grid item xs={1}>
-        <IconButton
-          disabled={disabled}
-          onClick={(e) => handleDeleteCollection(e, name)}
-        >
+        <IconButton disabled={disabled} onClick={() => deleteEntry()}>
           <Delete />
         </IconButton>
       </Grid>

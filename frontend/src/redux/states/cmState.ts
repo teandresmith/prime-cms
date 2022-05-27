@@ -1,75 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-const fakeData: any = {
-  channeltech: [
-    { id: 1, name: 'Products', createdAt: 'May 1 2022' },
-    { id: 2, name: 'Users', createdAt: 'May 1 2022' },
-    { id: 3, name: 'Orders', createdAt: 'May 1 2022' },
-    { id: 4, name: 'Reviews', createdAt: 'May 1 2022' },
-  ],
-  injapanblog: [
-    { id: 1, name: 'Products', createdAt: 'May 1 2022' },
-    { id: 2, name: 'Users', createdAt: 'May 1 2022' },
-    { id: 3, name: 'Orders', createdAt: 'May 1 2022' },
-  ],
-}
-
-const fakeData1: any = {
-  Products: [
-    {
-      id: 1,
-      name: 'Product Item',
-      createdAt: 'Some time',
-    },
-    {
-      id: 2,
-      name: 'Product Item',
-      createdAt: 'Some time',
-    },
-  ],
-  Users: [
-    {
-      id: 1,
-      name: 'UUProduct Item',
-      createdAt: 'Some time',
-    },
-    {
-      id: 2,
-      name: 'UUProduct Item',
-      createdAt: 'Some time',
-    },
-  ],
-  Reviews: [
-    {
-      id: 1,
-      name: 'RRProduct Item',
-      createdAt: 'Some time',
-    },
-    {
-      id: 2,
-      name: 'RRProduct Item',
-      createdAt: 'Some time',
-    },
-  ],
-  Orders: [
-    {
-      id: 1,
-      name: 'Order Item',
-      createdAt: 'Some time',
-    },
-    {
-      id: 2,
-      name: 'Order Item',
-      createdAt: 'Some time',
-    },
-  ],
-}
-
-const schemas = {
-  // each collection => Stored Schema in DB
-  // Products =
-}
-
 const project = {
   name: 'channel-tech',
   collections: [
@@ -97,8 +27,8 @@ const project = {
           isPaid: false,
           duration: Date.now(),
         },
-        { id: 1, firstName: 'thomas', isPaid: true, duration: Date.now() },
-        { id: 2, firstName: 'thomas', isPaid: true, duration: Date.now() },
+        { id: 1, firstName: 'thomas', isPaid: false, duration: Date.now() },
+        { id: 2, firstName: 'Billy', isPaid: true, duration: Date.now() },
       ],
     },
     {
@@ -128,7 +58,7 @@ const project = {
         {
           id: 2103,
           name: 'TeAndre Smith',
-          isPaid: false,
+          isPaid: true,
           price: 100,
         },
       ],
@@ -148,6 +78,7 @@ type Data = {
 }
 
 let collectionData: CollectionTemp = {}
+collectionData = JSON.parse(localStorage.getItem('currentCollection') as string)
 
 let currentData: Data = {}
 
@@ -159,7 +90,6 @@ const initialState = {
   currentCollection: collectionData,
   currentData: currentData,
   collectionData: [],
-  collections: fakeData['channeltech'],
   collectionDetails: {
     schmema: [
       {
@@ -174,20 +104,6 @@ const cmState = createSlice({
   name: 'cm',
   initialState,
   reducers: {
-    addCollection: (state, action) => {
-      var newInfo = state.collections
-
-      newInfo.push({ collectionName: action.payload.collection })
-
-      state.collections = newInfo
-    },
-    deleteCollection: (state, action) => {
-      var newInfo = state.collections
-      newInfo = newInfo.filter(
-        (value: any) => value?.collectionName !== action.payload.collection
-      )
-      state.collections = newInfo
-    },
     setCurrentProject: (state, action) => {
       state.currentProject = action.payload.project
       localStorage.setItem('currentProject', action.payload.project)
@@ -198,17 +114,51 @@ const cmState = createSlice({
       )
 
       state.currentCollection = newInfo.length !== 0 ? newInfo[0] : {}
-    },
-    setCollections: (state, action) => {
-      if (hasKey(fakeData, action.payload.collection))
-        state.collections = fakeData[action.payload.collection]
-    },
-    setCollectionData: (state, action) => {
-      if (hasKey(fakeData1, action.payload.collection))
-        state.collectionData = fakeData1[action.payload.collection]
+      localStorage.setItem(
+        'currentCollection',
+        JSON.stringify(state.currentCollection)
+      )
     },
     setCurrentData: (state, action) => {
       state.currentData = action.payload.data
+    },
+    deleteCollectionEntry: (state, action) => {
+      const newInfo = state.currentCollection.data?.filter(
+        (value) => value.id !== action.payload.id
+      )
+      state.currentCollection.data = newInfo
+    },
+    addCollectionEntry: (state, action) => {
+      const newInfo = state.currentCollection.data
+      newInfo?.push({
+        ...action.payload.data,
+        id: Math.round(Math.random() * 100),
+      })
+      state.currentCollection.data = newInfo
+    },
+    addContentType: (state, action) => {
+      const newInfo = state.currentCollection.contentType
+
+      if (!newInfo?.find((value) => value?.name === action.payload.type?.name))
+        newInfo?.push(action.payload.type)
+      state.currentCollection.contentType = newInfo
+    },
+    addCollection: (state, action) => {
+      const newInfo = state.project.collections
+      if (!newInfo?.find((value) => value?.name === action.payload.collection))
+        newInfo.push({
+          name: action.payload.collection,
+          contentType: [],
+          schema: [],
+          data: [],
+        })
+
+      state.project.collections = newInfo
+    },
+    addProject: (state, action) => {
+      const newInfo = state.projects
+      if (!newInfo?.find((value) => value === action.payload.project))
+        newInfo.push(action.payload.project)
     },
   },
 })
@@ -218,13 +168,14 @@ function hasKey<O>(obj: O, key: PropertyKey): key is keyof O {
 }
 
 export const {
-  addCollection,
-  deleteCollection,
   setCurrentProject,
   setCurrentCollection,
-  setCollections,
-  setCollectionData,
   setCurrentData,
+  deleteCollectionEntry,
+  addCollectionEntry,
+  addContentType,
+  addCollection,
+  addProject,
 } = cmState.actions
 
 export default cmState.reducer

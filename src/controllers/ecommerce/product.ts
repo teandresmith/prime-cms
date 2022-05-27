@@ -1,5 +1,6 @@
 import { Response, Request } from 'express'
 import axios from 'axios'
+import { options } from '../statics'
 
 export const getAllProducts = async (req: Request, res: Response) => {
   try {
@@ -7,10 +8,10 @@ export const getAllProducts = async (req: Request, res: Response) => {
       'https://en-jp-tech-ecommerce.an.r.appspot.com/api/products'
     )
 
-    res.json(data)
+    res.status(200).json(data)
   } catch (error) {
     res.status(500).json({
-      message: 'There was an error while trying to fetch product',
+      message: options.QUERY_ERROR,
       error: error,
     })
   }
@@ -20,6 +21,10 @@ export const getProductByID = async (req: Request, res: Response) => {
   try {
     const productId = req.params.productid
 
+    if (productId === '') {
+      res.status(400).json({ message: options.EMPTY_PARAM })
+    }
+
     const { data } = await axios.get(
       `https://en-jp-tech-ecommerce.an.r.appspot.com/api/products/${productId}`
     )
@@ -27,16 +32,22 @@ export const getProductByID = async (req: Request, res: Response) => {
     res.status(200).json(data)
   } catch (error) {
     res.status(500).json({
-      message: 'There was an error while trying to fetch product',
+      message: options.QUERY_ERROR,
       error: error,
     })
   }
 }
 
+export const getProductByPage = async (req: Request, res: Response) => {}
+
 export const deleteProductByID = async (req: Request, res: Response) => {
   try {
     const productId = req.params.productid
     const { token } = req.body
+
+    if (productId === '') {
+      res.status(400).json({ message: options.EMPTY_PARAM })
+    }
 
     const { data } = await axios.delete(
       `https://en-jp-tech-ecommerce.an.r.appspot.com/api/products/${productId}`,
@@ -50,7 +61,7 @@ export const deleteProductByID = async (req: Request, res: Response) => {
     res.status(200).json(data)
   } catch (error) {
     res.status(500).json({
-      message: 'There was an error while trying to fetch product',
+      message: options.DELETE_ERROR,
       error: error,
     })
   }
@@ -61,7 +72,7 @@ export const updateProductByID = async (req: Request, res: Response) => {
     const productId = req.params.productid
 
     if (productId === '') {
-      res.status(400).json({ message: 'There was no product id provided.' })
+      res.status(400).json({ message: options.EMPTY_PARAM })
     }
 
     const { token } = req.body
@@ -80,7 +91,7 @@ export const updateProductByID = async (req: Request, res: Response) => {
     res.status(200).json(data)
   } catch (error) {
     res.status(500).json({
-      message: 'There was an error while trying to fetch product',
+      message: options.UPDATE_ERROR,
       error: error,
     })
   }

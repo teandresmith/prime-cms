@@ -1,19 +1,30 @@
 import { Box, Stack, Typography, Paper, Button } from '@mui/material'
+import { useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks'
-import { addCollection } from '../../redux/states/cmState'
+import CTypeDialog from './CTypeDialog'
+
 import TypeCard from './TypeCard'
 
 type Props = {}
 
 const CTypeInfo = (props: Props) => {
+  const [open, setOpen] = useState(false)
+
   const dispatch = useAppDispatch()
+  const currentProject = useAppSelector((state) => state.cm.currentProject)
 
   const currentCollection = useAppSelector(
     (state) => state.cm.currentCollection
   )
 
-  const handleAddType = (event: any) => {
-    dispatch(addCollection({ collection: 'New' }))
+  const handleAddNewType = () => {}
+
+  const handleAddType = () => {
+    setOpen(true)
+  }
+
+  const handleClose = () => {
+    setOpen(false)
   }
 
   return (
@@ -27,19 +38,22 @@ const CTypeInfo = (props: Props) => {
           <Typography variant='h2' sx={{ fontSize: 44, ml: 0 }}>
             {currentCollection?.name}
           </Typography>
-          <Button
-            variant='outlined'
-            sx={{ height: 'fit-content', mr: 5 }}
-            onClick={handleAddType}
-          >
-            + New Type
-          </Button>
+          {currentProject !== 'channel-tech' && (
+            <Button
+              variant='outlined'
+              sx={{ height: 'fit-content', mr: 5 }}
+              onClick={handleAddType}
+            >
+              + New Type
+            </Button>
+          )}
         </Stack>
 
         <Typography sx={{ fontSize: 20, ml: 0 }}>
           {currentCollection?.contentType?.length} types found
         </Typography>
       </Box>
+      <CTypeDialog open={open} handleClose={handleClose} />
 
       <Paper
         elevation={2}
@@ -61,8 +75,8 @@ const CTypeInfo = (props: Props) => {
           {currentCollection?.contentType?.map((value, index) => (
             <TypeCard
               key={index}
-              name={value.name}
-              type={value.type}
+              name={value?.name}
+              type={value?.type}
               gridSx={{
                 pl: '16px',
                 pr: '16px',
