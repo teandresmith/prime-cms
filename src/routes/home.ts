@@ -20,6 +20,22 @@ home.get('/api', (req: Request, res: Response) => {
       '/api/ecommerce/products',
       '/api/ecommerce/products/:productsid',
     ],
+    ProjectEndpoints: {
+      Project: [
+        '/api/project',
+        '/api/project/:project',
+        '/api/project/:project/collection',
+        '/api/project/:project/collection/:name',
+      ],
+      ProjectContentData: [
+        '/api/:project/:collection/content-data',
+        '/api/:project/:collection/content-data/contentId',
+      ],
+      ProjectContentType: [
+        '/api/:project/:collection/content-type',
+        '/api/:project/:collection/content-type/:contentId',
+      ],
+    },
   }
   res.status(200).json(endpoints)
 })

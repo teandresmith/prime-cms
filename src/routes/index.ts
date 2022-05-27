@@ -12,5 +12,5 @@ export const configure = (app: Application) => {
   app.use('/api/ecommerce', ecommerceProduct)
   app.use('/api/project', project)
   app.use('/api', contentData)
-  app.use('/api/:project/:collection', contentTypes)
+  app.use('/api', contentTypes)
 }
