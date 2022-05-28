@@ -1,62 +1,70 @@
 import React from 'react'
-import {
-  Box,
-  CircularProgress,
-  Grid,
-  Paper,
-  Typography,
-  Button,
-} from '@mui/material'
-import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks'
+import { Box, Stack, Grid, Paper, Typography, Button } from '@mui/material'
+import { useAppSelector } from '../../hooks/reduxHooks'
 import { useForm } from 'react-hook-form'
 import { determineSizeAndComponent } from '../../helpers/formHelper'
-import { setCurrentData } from '../../redux/states/cmState'
 
-type Props = {}
+import { ContentType, Data } from '../../redux/Types'
+import {
+  useDeleteCollectionContentDataMutation,
+  useEditCollectionContentDataMutation,
+} from '../../redux/api/projectContentDataAPI'
+import { useNavigate, useParams } from 'react-router-dom'
 
-const CMViewInfo = (props: Props) => {
-  // Fetch -> Refetch
-  const [loading, setLoading] = React.useState(true)
+type CMViewInfoProps = {
+  data: Data
+  contentTypes: Array<ContentType>
+}
+
+const CMViewInfo = ({ data, contentTypes }: CMViewInfoProps) => {
   const methods = useForm()
-  const currentData = useAppSelector((state) => state.cm.currentData)
+  const params = useParams()
+
+  const navigate = useNavigate()
+
+  const [editCollectionContentData] = useEditCollectionContentDataMutation()
+  const [deleteCollectionContentData] = useDeleteCollectionContentDataMutation()
+
   const currentCollection = useAppSelector(
     (state) => state.cm.currentCollection
   )
-  const currentProject = useAppSelector((state) => state.cm.currentProject)
-  const dispatch = useAppDispatch()
-
-  React.useEffect(() => {
-    setTimeout(() => setLoading(false), 500)
-  }, [currentData])
+  const currentProjectName = useAppSelector(
+    (state) => state.cm.currentProjectName
+  )
 
   const onSubmit = (data: any) => {
-    console.log(data)
-    // if (currentProject === 'channel-tech') {
-    //   dispatch(setCurrentData({ data: data }))
-    // } else {
-    //   dispatch(setCurrentData({ data: data }))
-    // }
+    const id = params?.id
+    const contentData = { id, ...data }
+    editCollectionContentData({
+      projectName: currentProjectName,
+      collectionName: currentCollection,
+      contentData: { contentData: contentData },
+      contentId: id,
+    })
   }
 
-  return loading ? (
-    <Box
-      sx={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: '75%',
-        height: '100vh',
-      }}
-    >
-      <CircularProgress />
-    </Box>
-  ) : (
+  const handleDeleteClick = () => {
+    const id = params?.id
+
+    if (window.confirm('Do you want to delete this collection item?') == true) {
+      deleteCollectionContentData({
+        projectName: currentProjectName,
+        collectionName: currentCollection,
+        contentId: id,
+      })
+      navigate(-1)
+    }
+  }
+
+  return (
     <Box component='div' sx={{ pl: 4, pt: 2, width: '75%' }}>
       <Box component='div'>
         <Box component='div'>
-          <Typography variant='body1'>Back</Typography>
+          <Button variant='outlined' onClick={() => navigate(-1)}>
+            Back
+          </Button>
           <Typography variant='h2' sx={{ fontSize: 44, ml: 0 }}>
-            {currentData[Object.keys(currentData)[1]]}
+            {`${currentCollection} - Item id: ${data.id}`}
           </Typography>
         </Box>
 
@@ -69,24 +77,35 @@ const CMViewInfo = (props: Props) => {
               spacing={1}
               sx={{ pl: 2, pt: 2, pb: 2 }}
             >
-              {currentCollection?.contentType?.map((value, index) =>
+              {contentTypes?.map((value: ContentType, index: number) =>
                 determineSizeAndComponent(
                   value.type,
                   value.name,
                   index,
                   methods.control,
-                  currentData[value.name]
+                  data[value.name]
                 )
               )}
             </Grid>
-            <Button
-              variant='outlined'
-              color='info'
-              type='submit'
-              sx={{ height: 'fit-content', ml: 2 }}
-            >
-              Save
-            </Button>
+            <Stack direction='row'>
+              <Button
+                variant='outlined'
+                color='info'
+                type='submit'
+                sx={{ height: 'fit-content', ml: 2 }}
+              >
+                Save
+              </Button>
+              <Button
+                variant='outlined'
+                color='error'
+                type='submit'
+                sx={{ height: 'fit-content', ml: 2 }}
+                onClick={() => handleDeleteClick()}
+              >
+                Delete
+              </Button>
+            </Stack>
           </Box>
         </Paper>
       </Box>

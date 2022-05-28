@@ -11,30 +11,44 @@ import {
 import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks'
 import { MHFTextField, MHFSelect } from 'mui-hook-form-mhf'
 import { useForm } from 'react-hook-form'
-import { addContentType } from '../../redux/states/cmState'
+import { useAddCollectionContentTypesMutation } from '../../redux/api/projectContentTypeAPI'
 
 type CTypeDialogProps = {
   handleClose: any
   open: boolean
 }
 
+type FormData = {
+  name: string
+  type: string
+}
+
 const CTypeDialog = ({ handleClose, open }: CTypeDialogProps) => {
-  const methods = useForm()
+  const methods = useForm<FormData>()
   const dispatch = useAppDispatch()
+
+  const [addCollectionContentTypes, { error }] =
+    useAddCollectionContentTypesMutation()
   const currentCollection = useAppSelector(
     (state) => state.cm.currentCollection
   )
+  const currentProjectName = useAppSelector(
+    (state) => state.cm.currentProjectName
+  )
 
-  const onSubmit = (data: any) => {
-    console.log(data)
-    dispatch(addContentType({ type: data }))
+  const onSubmit = (data: FormData) => {
+    addCollectionContentTypes({
+      projectName: currentProjectName,
+      collectionName: currentCollection,
+      contentType: data,
+    })
     methods.setValue('name', '')
     methods.setValue('type', '')
   }
 
   return (
     <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>{currentCollection?.name} Collection - New Type</DialogTitle>
+      <DialogTitle>{currentCollection} Collection - New Type</DialogTitle>
       <Box component='form' onSubmit={methods.handleSubmit(onSubmit)}>
         <DialogContent>
           <Grid container rowSpacing={2}>

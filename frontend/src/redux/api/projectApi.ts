@@ -3,47 +3,51 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 export const projectAPI = createApi({
   reducerPath: 'projectAPI',
   baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:5000' }),
+  tagTypes: ['Projects', 'Project'],
   endpoints: (builder) => ({
-    getProjects: builder.mutation({
+    getProjects: builder.query({
       query: () => '/api/project/',
+      providesTags: ['Projects'],
     }),
 
-    addProjects: builder.mutation({
+    addProject: builder.mutation({
       query: (project) => ({
-        url: '/api/projects/',
+        url: '/api/project/',
         method: 'POST',
         body: project,
       }),
+      invalidatesTags: ['Projects'],
     }),
 
-    getProject: builder.mutation({
-      query: (projectName) => ({
-        url: `/api/projects/${projectName}`,
-        method: 'GET',
-      }),
+    getProject: builder.query({
+      query: (projectName) => `/api/project/${projectName}`,
+      providesTags: ['Project'],
     }),
 
-    editProjects: builder.mutation({
+    editProject: builder.mutation({
       query: ({ projectName, project }) => ({
-        url: `/api/projects/${projectName}`,
+        url: `/api/project/${projectName}`,
         method: 'PATCH',
         body: project,
       }),
+      invalidatesTags: ['Projects'],
     }),
 
-    deleteProjects: builder.mutation({
+    deleteProject: builder.mutation({
       query: (projectName) => ({
-        url: `/api/projects/${projectName}`,
+        url: `/api/project/${projectName}`,
         method: 'DELETE',
       }),
+      invalidatesTags: ['Projects'],
     }),
 
     addProjectCollection: builder.mutation({
       query: ({ project, collection }) => ({
-        url: `/api/${project}/collection`,
+        url: `/api/project/${project}/collection`,
         method: 'POST',
         body: collection,
       }),
+      invalidatesTags: ['Project'],
     }),
 
     editProjectCollection: builder.mutation({
@@ -52,6 +56,7 @@ export const projectAPI = createApi({
         method: 'PATCH',
         body: collection,
       }),
+      invalidatesTags: ['Project'],
     }),
 
     deleteProjectCollection: builder.mutation({
@@ -59,17 +64,18 @@ export const projectAPI = createApi({
         url: `/api/${project}/collection/${collectionName}`,
         method: 'DELETE',
       }),
+      invalidatesTags: ['Project'],
     }),
   }),
 })
 
 export const {
-  useGetProjectsMutation,
-  useAddProjectsMutation,
-  useGetProjectMutation,
-  useEditProjectsMutation,
+  useGetProjectsQuery,
+  useAddProjectMutation,
+  useGetProjectQuery,
+  useEditProjectMutation,
   useEditProjectCollectionMutation,
   useDeleteProjectCollectionMutation,
-  useDeleteProjectsMutation,
+  useDeleteProjectMutation,
   useAddProjectCollectionMutation,
 } = projectAPI

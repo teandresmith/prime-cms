@@ -10,16 +10,23 @@ import {
   DialogContentText,
 } from '@mui/material'
 import { useState } from 'react'
-import { useAppDispatch } from '../hooks/reduxHooks'
 import { MHFTextField } from 'mui-hook-form-mhf'
 import { useForm } from 'react-hook-form'
-import { addCollection } from '../redux/states/cmState'
+import { useAddProjectCollectionMutation } from '../redux/api/projectApi'
+import { useAppSelector } from '../hooks/reduxHooks'
+
+type FormData = {
+  name: string
+}
 
 const NoCollectionSelected = () => {
   const [open, setOpen] = useState(false)
-  const methods = useForm()
+  const methods = useForm<FormData>()
 
-  const dispatch = useAppDispatch()
+  const [addProjectCollection] = useAddProjectCollectionMutation()
+  const currentProjectName = useAppSelector(
+    (state) => state.cm.currentProjectName
+  )
 
   const handleAddCollection = () => {
     setOpen(true)
@@ -29,9 +36,17 @@ const NoCollectionSelected = () => {
     setOpen(false)
   }
 
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: FormData) => {
     console.log(data)
-    dispatch(addCollection({ collection: data?.name }))
+    const collection = {
+      name: data.name,
+      contentType: null,
+      data: null,
+    }
+    addProjectCollection({
+      project: currentProjectName,
+      collection: { collection: collection },
+    })
     methods.setValue('name', '')
   }
 

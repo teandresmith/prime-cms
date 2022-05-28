@@ -51,7 +51,7 @@ const Login = (props: Props) => {
           }}
         >
           <Box component='div'>
-            <Typography variant='h6'>Welcome to CMS</Typography>
+            <Typography variant='h6'>Welcome to Prime-CMS</Typography>
             <Typography variant='body1'>You must login to continue</Typography>
           </Box>
           <Stack direction='column' spacing={1}>

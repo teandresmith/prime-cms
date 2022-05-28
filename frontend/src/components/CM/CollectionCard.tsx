@@ -1,8 +1,8 @@
 import { Delete } from '@mui/icons-material'
 import { Checkbox, Grid, IconButton, SxProps, Theme } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
-import { useAppDispatch } from '../../hooks/reduxHooks'
-import { deleteCollectionEntry } from '../../redux/states/cmState'
+import { useAppSelector } from '../../hooks/reduxHooks'
+import { useDeleteCollectionContentDataMutation } from '../../redux/api/projectContentDataAPI'
 
 type CollectionCardProps = {
   name: string
@@ -22,7 +22,15 @@ const CollectionCard = ({
   url,
 }: CollectionCardProps) => {
   const navigate = useNavigate()
-  const dispatch = useAppDispatch()
+
+  const currentCollection = useAppSelector(
+    (state) => state.cm.currentCollection
+  )
+  const currentProjectName = useAppSelector(
+    (state) => state.cm.currentProjectName
+  )
+
+  const [deleteCollectionContentData] = useDeleteCollectionContentDataMutation()
 
   const handleClick = () => {
     if (url) {
@@ -30,8 +38,14 @@ const CollectionCard = ({
     }
   }
 
-  const deleteEntry = () => {
-    dispatch(deleteCollectionEntry({ id: id }))
+  const handleDeleteEntry = () => {
+    if (window.confirm(`Delete Entry - ID: ${id}?`) == true) {
+      deleteCollectionContentData({
+        projectName: currentProjectName,
+        collectionName: currentCollection,
+        contentId: id,
+      })
+    }
   }
 
   return (
@@ -55,7 +69,7 @@ const CollectionCard = ({
         </Grid>
       </Grid>
       <Grid item xs={1}>
-        <IconButton disabled={disabled} onClick={() => deleteEntry()}>
+        <IconButton disabled={disabled} onClick={() => handleDeleteEntry()}>
           <Delete />
         </IconButton>
       </Grid>

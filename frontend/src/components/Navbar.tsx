@@ -6,7 +6,9 @@ import { useAppSelector } from '../hooks/reduxHooks'
 type Props = {}
 
 const Navbar = (props: Props) => {
-  const currentProject = useAppSelector((state) => state.cm.currentProject)
+  const currentProjectName = useAppSelector(
+    (state) => state.cm.currentProjectName
+  )
   return (
     <Box
       component={'div'}
@@ -77,7 +79,7 @@ const Navbar = (props: Props) => {
                 width: '100%',
               }}
             >
-              {currentProject}
+              {currentProjectName}
             </Button>
           </Box>
         </Stack>

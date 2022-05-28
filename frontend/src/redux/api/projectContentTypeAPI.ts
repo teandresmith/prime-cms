@@ -3,12 +3,12 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 export const projectContentTypeAPI = createApi({
   reducerPath: 'projectContentTypeAPI',
   baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:5000' }),
+  tagTypes: ['ContentType'],
   endpoints: (builder) => ({
-    getAllCollectionContentTypes: builder.mutation({
-      query: ({ projectName, collectionName }) => ({
-        url: `/api/${projectName}/${collectionName}/content-type`,
-        method: 'GET',
-      }),
+    getAllCollectionContentTypes: builder.query({
+      query: ({ projectName, collectionName }) =>
+        `/api/${projectName}/${collectionName}/content-type`,
+      providesTags: ['ContentType'],
     }),
 
     addCollectionContentTypes: builder.mutation({
@@ -17,6 +17,7 @@ export const projectContentTypeAPI = createApi({
         method: 'POST',
         body: contentType,
       }),
+      invalidatesTags: ['ContentType'],
     }),
 
     getCollectionContentType: builder.mutation({
@@ -32,6 +33,7 @@ export const projectContentTypeAPI = createApi({
         method: 'GET',
         body: contentType,
       }),
+      invalidatesTags: ['ContentType'],
     }),
 
     deleteCollectionContentType: builder.mutation({
@@ -39,12 +41,13 @@ export const projectContentTypeAPI = createApi({
         url: `/api/${projectName}/${collectionName}/content-type/${contentId}`,
         method: 'DELETE',
       }),
+      invalidatesTags: ['ContentType'],
     }),
   }),
 })
 
 export const {
-  useGetAllCollectionContentTypesMutation,
+  useGetAllCollectionContentTypesQuery,
   useAddCollectionContentTypesMutation,
   useGetCollectionContentTypeMutation,
   useEditCollectionContentTypeMutation,

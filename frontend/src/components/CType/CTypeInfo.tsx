@@ -1,23 +1,23 @@
 import { Box, Stack, Typography, Paper, Button } from '@mui/material'
 import { useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks'
+import { Collection, ContentType } from '../../redux/Types'
 import CTypeDialog from './CTypeDialog'
 
 import TypeCard from './TypeCard'
 
-type Props = {}
+type CTypeInfoProps = {
+  contentTypes?: Array<ContentType>
+  collectionName: string
+}
 
-const CTypeInfo = (props: Props) => {
+const CTypeInfo = ({ contentTypes, collectionName }: CTypeInfoProps) => {
   const [open, setOpen] = useState(false)
 
   const dispatch = useAppDispatch()
-  const currentProject = useAppSelector((state) => state.cm.currentProject)
-
-  const currentCollection = useAppSelector(
-    (state) => state.cm.currentCollection
+  const currentProjectName = useAppSelector(
+    (state) => state.cm.currentProjectName
   )
-
-  const handleAddNewType = () => {}
 
   const handleAddType = () => {
     setOpen(true)
@@ -36,9 +36,9 @@ const CTypeInfo = (props: Props) => {
           alignItems={'center'}
         >
           <Typography variant='h2' sx={{ fontSize: 44, ml: 0 }}>
-            {currentCollection?.name}
+            {collectionName}
           </Typography>
-          {currentProject !== 'channel-tech' && (
+          {currentProjectName !== 'channel-tech' && (
             <Button
               variant='outlined'
               sx={{ height: 'fit-content', mr: 5 }}
@@ -50,7 +50,7 @@ const CTypeInfo = (props: Props) => {
         </Stack>
 
         <Typography sx={{ fontSize: 20, ml: 0 }}>
-          {currentCollection?.contentType?.length} types found
+          {contentTypes?.length} types found
         </Typography>
       </Box>
       <CTypeDialog open={open} handleClose={handleClose} />
@@ -63,6 +63,7 @@ const CTypeInfo = (props: Props) => {
         <TypeCard
           name='Name'
           type='Type'
+          disabled
           gridSx={{
             pl: '16px',
             pr: '16px',
@@ -72,7 +73,7 @@ const CTypeInfo = (props: Props) => {
           }}
         />
         <Stack direction='column' justifyContent={'center'} spacing={1}>
-          {currentCollection?.contentType?.map((value, index) => (
+          {contentTypes?.map((value: ContentType, index) => (
             <TypeCard
               key={index}
               name={value?.name}

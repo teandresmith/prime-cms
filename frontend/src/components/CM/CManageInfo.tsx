@@ -10,22 +10,31 @@ import {
   DialogActions,
   Grid,
 } from '@mui/material'
-import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks'
+import { useAppSelector } from '../../hooks/reduxHooks'
 import React from 'react'
 import CollectionCard from './../CM/CollectionCard'
 import { useForm } from 'react-hook-form'
 import { determineSizeAndComponent } from '../../helpers/formHelper'
-import { addCollectionEntry } from '../../redux/states/cmState'
+import { ContentType, Data } from '../../redux/Types'
+import { useAddCollectionContentDataMutation } from '../../redux/api/projectContentDataAPI'
 
-type Props = {}
+type CManageInfoProps = {
+  contentData: Array<Data>
+  collectionName: string
+  contentTypes: Array<ContentType>
+}
 
-const CManageInfo = (props: Props) => {
+const CManageInfo = ({
+  contentData,
+  collectionName,
+  contentTypes,
+}: CManageInfoProps) => {
   const methods = useForm()
   const [open, setOpen] = React.useState(false)
-  const dispatch = useAppDispatch()
 
-  const currentCollection = useAppSelector(
-    (state) => state.cm.currentCollection
+  const [addCollectionContentData] = useAddCollectionContentDataMutation()
+  const currentProjectName = useAppSelector(
+    (state) => state.cm.currentProjectName
   )
 
   const handleAddEntry = () => {
@@ -37,8 +46,16 @@ const CManageInfo = (props: Props) => {
   }
 
   const onSubmit = (data: any) => {
-    console.log(data)
-    dispatch(addCollectionEntry({ data: data }))
+    const id = Math.floor(Math.random() * 100000)
+    const contentData = { id: `${id}`, ...data }
+    addCollectionContentData({
+      projectName: currentProjectName,
+      collectionName: collectionName,
+      contentData: { contentData: contentData },
+    })
+    for (let i = 0; i < Object.keys(data).length; i++) {
+      methods.setValue(Object.keys(data)[i], '')
+    }
   }
 
   return (
@@ -50,7 +67,7 @@ const CManageInfo = (props: Props) => {
           alignItems={'center'}
         >
           <Typography variant='h2' sx={{ fontSize: 44, ml: 0 }}>
-            {currentCollection?.name}
+            {collectionName}
           </Typography>
           <Button
             variant='outlined'
@@ -61,13 +78,11 @@ const CManageInfo = (props: Props) => {
           </Button>
         </Stack>
         <Dialog open={open} onClose={handleClose}>
-          <DialogTitle>
-            {currentCollection.name} Collection - New Entry
-          </DialogTitle>
+          <DialogTitle>{collectionName} Collection - New Entry</DialogTitle>
           <Box component='form' onSubmit={methods.handleSubmit(onSubmit)}>
             <DialogContent>
               <Grid container rowSpacing={2}>
-                {currentCollection.contentType?.map((value, index) =>
+                {contentTypes?.map((value: ContentType, index: number) =>
                   determineSizeAndComponent(
                     value.type,
                     value.name,
@@ -86,8 +101,11 @@ const CManageInfo = (props: Props) => {
           </Box>
         </Dialog>
 
+        <Typography sx={{ fontSize: 20, ml: 0, pb: 1 }}>
+          {contentData?.length || '0'} entries found
+        </Typography>
         <Typography sx={{ fontSize: 20, ml: 0 }}>
-          {currentCollection?.data?.length} entries found
+          Click on an entry to view and edit the data
         </Typography>
       </Box>
 
@@ -98,7 +116,7 @@ const CManageInfo = (props: Props) => {
       >
         <CollectionCard
           id='id'
-          name={currentCollection?.contentType?.[0]?.name || ''}
+          name={contentTypes?.[0]?.name || ''}
           createdAt='Created At'
           disabled
           gridSx={{
@@ -110,11 +128,11 @@ const CManageInfo = (props: Props) => {
           }}
         />
         <Stack direction='column' justifyContent={'center'} spacing={0}>
-          {currentCollection?.data?.map((value: any, index: number) => (
+          {contentData?.map((value: Data, index: number) => (
             <CollectionCard
               key={index}
               id={value?.id}
-              name={value?.[currentCollection?.contentType?.[0]?.name] || ''}
+              name={value?.[contentTypes?.[0]?.name] || ''}
               createdAt='May 12, 1800'
               gridSx={{
                 pl: '16px',

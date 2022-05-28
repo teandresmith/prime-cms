@@ -10,25 +10,35 @@ import {
   DialogActions,
   DialogTitle,
 } from '@mui/material'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks'
-import { addProject, setCurrentProject } from '../../redux/states/cmState'
+import { setCurrentProjectName } from '../../redux/states/cmState'
 import { MHFTextField } from 'mui-hook-form-mhf'
 import { useForm } from 'react-hook-form'
+import {
+  useAddProjectMutation,
+  useGetProjectsQuery,
+} from '../../redux/api/projectApi'
+import ProjectCard from './ProjectCard'
+import Loader from '../Loader'
 
-type Props = {}
+type FormData = {
+  name: string
+}
 
-const Projects = (props: Props) => {
-  const methods = useForm()
-
+const Projects = () => {
+  const methods = useForm<FormData>()
   const [open, setOpen] = useState(false)
   const [dialogOpen, setDialogOpen] = useState(false)
-  const projects = useAppSelector((state) => state.cm.projects)
-  const currentProject = useAppSelector((state) => state.cm.currentProject)
+
+  const { data, isLoading, error } = useGetProjectsQuery('')
+  const [addProject] = useAddProjectMutation()
+
+  const currentProject = useAppSelector((state) => state.cm.currentProjectName)
   const dispatch = useAppDispatch()
 
   const handleProjectClick = (value: string) => {
-    dispatch(setCurrentProject({ project: value }))
+    dispatch(setCurrentProjectName({ project: value }))
     setOpen(true)
   }
 
@@ -36,8 +46,10 @@ const Projects = (props: Props) => {
     setOpen(false)
   }
 
-  const onSubmit = (data: any) => {
-    dispatch(addProject({ project: data?.name }))
+  const onSubmit = (data: FormData) => {
+    const project = { name: data.name }
+    addProject(project)
+    methods.setValue('name', '')
   }
 
   const handleDialogClose = () => {
@@ -71,6 +83,7 @@ const Projects = (props: Props) => {
           </Button>
         </Stack>
       </Box>
+
       <Dialog open={dialogOpen} onClose={handleDialogClose}>
         <DialogTitle>New Project</DialogTitle>
         <Box component='form' onSubmit={methods.handleSubmit(onSubmit)}>
@@ -94,23 +107,29 @@ const Projects = (props: Props) => {
           </DialogActions>
         </Box>
       </Dialog>
+
       <Box component='div' sx={{ pt: 4 }}>
         <Typography variant='h6' sx={{ pb: 2 }}>
           Click to set Project
         </Typography>
-        <Stack direction='row' spacing={1}>
-          {projects.map((value, index) => (
-            <Button
-              key={index}
-              variant='contained'
-              color='inherit'
-              sx={{ color: 'black' }}
-              onClick={() => handleProjectClick(value)}
-            >
-              {value}
-            </Button>
-          ))}
-        </Stack>
+        {isLoading ? (
+          <Loader />
+        ) : (
+          <Grid container rowGap={1} columnGap={1}>
+            <Grid item xs={3}>
+              <ProjectCard
+                name={'channel-tech'}
+                disabled={true}
+                setOpen={setOpen}
+              />
+            </Grid>
+            {data?.result?.map((value: any, index: number) => (
+              <Grid item key={index} xs={3}>
+                <ProjectCard name={value?.name} setOpen={setOpen} />
+              </Grid>
+            ))}
+          </Grid>
+        )}
       </Box>
       <Snackbar
         open={open}
@@ -119,6 +138,8 @@ const Projects = (props: Props) => {
         message={`${currentProject} set as current project`}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
       />
+
+      <Box component='div'></Box>
     </Box>
   )
 }

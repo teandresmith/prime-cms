@@ -5,22 +5,37 @@ import CTypeNav from './CType/CTypeNav'
 import { useAppDispatch } from '../hooks/reduxHooks'
 import { setCurrentCollection } from '../redux/states/cmState'
 import { useSearchParams } from 'react-router-dom'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import NoCollectionSelected from './NoCollectionSelected'
+import { Project } from '../redux/Types'
+import { useGetAllCollectionContentTypesQuery } from '../redux/api/projectContentTypeAPI'
+import Loader from './Loader'
 
-type Props = {}
+type CTypeProps = {
+  project: Project
+}
 
-const CType = (props: Props) => {
+const CType = ({ project }: CTypeProps) => {
   const [searchParams] = useSearchParams()
+  const [skip, setSkip] = useState(true)
   let collection = searchParams.get('collection')
+
+  const { data, isLoading } = useGetAllCollectionContentTypesQuery(
+    { projectName: project?.name, collectionName: collection },
+    { skip: skip }
+  )
 
   const dispatch = useAppDispatch()
 
   useEffect(() => {
-    if (collection !== null) {
+    if (collection !== null && project) {
+      setSkip(false)
       dispatch(setCurrentCollection({ collection: collection }))
     }
-  }, [collection])
+    if (collection === null || !project) {
+      setSkip(true)
+    }
+  }, [collection, project])
   return (
     <Box
       component='div'
@@ -28,8 +43,14 @@ const CType = (props: Props) => {
     >
       <Navbar />
       <Stack direction={'row'} sx={{ width: '95%' }}>
-        <CTypeNav />
-        {collection !== null ? <CTypeInfo /> : <NoCollectionSelected />}
+        <CTypeNav project={project} />
+        {collection === null ? (
+          <NoCollectionSelected />
+        ) : isLoading ? (
+          <Loader />
+        ) : (
+          <CTypeInfo contentTypes={data?.result} collectionName={collection} />
+        )}
       </Stack>
     </Box>
   )

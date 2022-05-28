@@ -1,31 +1,39 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Box, Stack } from '@mui/material'
 import Navbar from './Navbar'
 import CManageNav from './CM/CManageNav'
 import CMViewInfo from './CM/CMViewInfo'
 import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks'
-import { setCurrentData } from '../redux/states/cmState'
+import { useGetCollectionContentDataQuery } from '../redux/api/projectContentDataAPI'
+import { useGetAllCollectionContentTypesQuery } from '../redux/api/projectContentTypeAPI'
+import { Project } from '../redux/Types'
 
-type Props = {}
+type CMViewProps = {
+  project: Project
+}
 
-const CMView = (props: Props) => {
+const CMView = ({ project }: CMViewProps) => {
   const params = useParams()
 
-  const dispatch = useAppDispatch()
+  const currentProjectName = useAppSelector(
+    (state) => state.cm.currentProjectName
+  )
   const currentCollection = useAppSelector(
     (state) => state.cm.currentCollection
   )
-  const currentData = useAppSelector((state) => state.cm.currentData)
 
-  React.useEffect(() => {
-    const id = params?.id
-    let data = currentCollection?.data?.find(
-      (value) => value?.id === parseInt(id as string)
-    )
+  const { data, isLoading } = useGetCollectionContentDataQuery({
+    projectName: currentProjectName,
+    collectionName: currentCollection,
+    contentId: params?.id,
+  })
 
-    dispatch(setCurrentData({ data: data }))
-  }, [params?.id, dispatch])
+  const { data: contentType, isLoading: contentLoading } =
+    useGetAllCollectionContentTypesQuery({
+      projectName: currentProjectName,
+      collectionName: currentCollection,
+    })
 
   return (
     <Box
@@ -34,8 +42,10 @@ const CMView = (props: Props) => {
     >
       <Navbar />
       <Stack direction={'row'} sx={{ width: '95%' }}>
-        <CManageNav />
-        {Object.keys(currentData).length !== 0 && <CMViewInfo />}
+        <CManageNav project={project} />
+        {!isLoading && !contentLoading && (
+          <CMViewInfo data={data?.result} contentTypes={contentType?.result} />
+        )}
       </Stack>
     </Box>
   )

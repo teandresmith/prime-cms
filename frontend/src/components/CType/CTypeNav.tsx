@@ -1,13 +1,18 @@
 import { Box, Stack, Typography, Button } from '@mui/material'
 import { useAppSelector } from '../../hooks/reduxHooks'
 import { useNavigate } from 'react-router-dom'
+import { Collection, Project } from '../../redux/Types'
 
-type Props = {}
+type CTypeNavProps = {
+  project?: Project
+}
 
-const CTypeNav = (props: Props) => {
+const CTypeNav = ({ project }: CTypeNavProps) => {
   const navigate = useNavigate()
-  const currentProject = useAppSelector((state) => state.cm.currentProject)
-  const project = useAppSelector((state) => state.cm.project)
+  const currentProjectName = useAppSelector(
+    (state) => state.cm.currentProjectName
+  )
+
   return (
     <Box
       component='div'
@@ -19,11 +24,11 @@ const CTypeNav = (props: Props) => {
     >
       <Stack sx={{ pl: 2 }}>
         <Typography variant='h5'>Content Types</Typography>
-        <Typography variant='body1'>{project.name}</Typography>
+        <Typography variant='body1'>{project?.name}</Typography>
       </Stack>
       <Stack direction='column' sx={{ pt: 1 }}>
         <ul>
-          {project.collections.map((value, index: any) => (
+          {project?.collections?.map((value: Collection, index: any) => (
             <li key={index}>
               <Button
                 sx={{ color: 'black', textTransform: 'none', fontSize: '18px' }}
