@@ -1,5 +1,4 @@
 import { Box, Stack, Typography, Button } from '@mui/material'
-import { useAppSelector } from '../../hooks/reduxHooks'
 import { useNavigate } from 'react-router-dom'
 import { Collection, Project } from '../../redux/Types'
 
@@ -9,9 +8,6 @@ type CTypeNavProps = {
 
 const CTypeNav = ({ project }: CTypeNavProps) => {
   const navigate = useNavigate()
-  const currentProjectName = useAppSelector(
-    (state) => state.cm.currentProjectName
-  )
 
   return (
     <Box

@@ -8,7 +8,7 @@ import {
   Button,
   Grid,
 } from '@mui/material'
-import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks'
+import { useAppSelector } from '../../hooks/reduxHooks'
 import { MHFTextField, MHFSelect } from 'mui-hook-form-mhf'
 import { useForm } from 'react-hook-form'
 import { useAddCollectionContentTypesMutation } from '../../redux/api/projectContentTypeAPI'
@@ -25,10 +25,8 @@ type FormData = {
 
 const CTypeDialog = ({ handleClose, open }: CTypeDialogProps) => {
   const methods = useForm<FormData>()
-  const dispatch = useAppDispatch()
 
-  const [addCollectionContentTypes, { error }] =
-    useAddCollectionContentTypesMutation()
+  const [addCollectionContentTypes] = useAddCollectionContentTypesMutation()
   const currentCollection = useAppSelector(
     (state) => state.cm.currentCollection
   )

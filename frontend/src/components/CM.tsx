@@ -26,11 +26,10 @@ const CM = ({ project }: CMProps) => {
     { skip: skip }
   )
 
-  const { data: contentType, isLoading: contentLoading } =
-    useGetAllCollectionContentTypesQuery(
-      { projectName: project?.name, collectionName: collection },
-      { skip: skip }
-    )
+  const { data: contentType } = useGetAllCollectionContentTypesQuery(
+    { projectName: project?.name, collectionName: collection },
+    { skip: skip }
+  )
 
   const dispatch = useAppDispatch()
 

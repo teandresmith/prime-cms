@@ -36,7 +36,7 @@ const Projects = ({ project }: ProjectsProps) => {
   const [open, setOpen] = useState(false)
   const [dialogOpen, setDialogOpen] = useState(false)
 
-  const { data, isLoading, error } = useGetProjectsQuery('')
+  const { data, isLoading } = useGetProjectsQuery('')
   const [addProject] = useAddProjectMutation()
 
   const currentProject = useAppSelector((state) => state.cm.currentProjectName)
