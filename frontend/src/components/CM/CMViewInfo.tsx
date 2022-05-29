@@ -1,5 +1,14 @@
-import React from 'react'
-import { Box, Stack, Grid, Paper, Typography, Button } from '@mui/material'
+import { useEffect, useState } from 'react'
+import {
+  Box,
+  Stack,
+  Grid,
+  Paper,
+  Typography,
+  Button,
+  Snackbar,
+  Alert,
+} from '@mui/material'
 import { useAppSelector } from '../../hooks/reduxHooks'
 import { useForm } from 'react-hook-form'
 import { determineSizeAndComponent } from '../../helpers/formHelper'
@@ -19,10 +28,12 @@ type CMViewInfoProps = {
 const CMViewInfo = ({ data, contentTypes }: CMViewInfoProps) => {
   const methods = useForm()
   const params = useParams()
+  const [open, setOpen] = useState(false)
 
   const navigate = useNavigate()
 
-  const [editCollectionContentData] = useEditCollectionContentDataMutation()
+  const [editCollectionContentData, { isSuccess }] =
+    useEditCollectionContentDataMutation()
   const [deleteCollectionContentData] = useDeleteCollectionContentDataMutation()
 
   const currentCollection = useAppSelector(
@@ -32,21 +43,31 @@ const CMViewInfo = ({ data, contentTypes }: CMViewInfoProps) => {
     (state) => state.cm.currentProjectName
   )
 
-  const onSubmit = (data: any) => {
+  const onSubmit = (formData: any) => {
     const id = params?.id
 
     const json = checkForJSON()
-    if (json !== undefined) {
-      data[json.name] = JSON.parse(data[json.name])
+    if (json !== undefined && formData[json.name] !== '') {
+      try {
+        formData[json.name] = JSON.parse(formData[json.name])
+      } catch (error) {
+        console.log(error)
+        methods.setError(json.name, { type: 'focus' }, { shouldFocus: true })
+        return
+      }
     }
 
-    const contentData = { id, ...data }
+    const contentData = { id, createdAt: data?.createdAt, ...formData }
     editCollectionContentData({
       projectName: currentProjectName,
       collectionName: currentCollection,
       contentData: { contentData: contentData },
       contentId: id,
     })
+  }
+
+  const handleClose = () => {
+    setOpen(false)
   }
 
   const checkForJSON = () => {
@@ -69,6 +90,12 @@ const CMViewInfo = ({ data, contentTypes }: CMViewInfoProps) => {
     }
   }
 
+  useEffect(() => {
+    if (isSuccess) {
+      setOpen(true)
+    }
+  }, [isSuccess])
+
   return (
     <Box component='div' sx={{ pl: 4, pt: 2, width: '75%' }}>
       <Box component='div'>
@@ -82,6 +109,13 @@ const CMViewInfo = ({ data, contentTypes }: CMViewInfoProps) => {
         </Box>
 
         <Paper elevation={4} component='div' sx={{ mt: 3, p: 1, mb: 3 }}>
+          {Object.keys(methods.formState.errors).length !== 0 && (
+            <Alert color='error' variant='standard'>
+              {`Error with fields - ${Object.keys(
+                methods.formState.errors
+              ).join(',')}`}
+            </Alert>
+          )}
           <Box component='form' onSubmit={methods.handleSubmit(onSubmit)}>
             <Grid
               container
@@ -122,6 +156,20 @@ const CMViewInfo = ({ data, contentTypes }: CMViewInfoProps) => {
           </Box>
         </Paper>
       </Box>
+      <Snackbar
+        open={open}
+        autoHideDuration={3000}
+        onClose={handleClose}
+        message={`Successfully saved data`}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      />
+      <Snackbar
+        open={Object.keys(methods.formState.errors).length !== 0}
+        autoHideDuration={3000}
+        onClose={handleClose}
+        message={`Something went wrong while saving...`}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      />
     </Box>
   )
 }

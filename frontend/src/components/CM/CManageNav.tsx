@@ -1,6 +1,5 @@
 import { Box, Stack, Typography, Button } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
-import { useAppSelector } from '../../hooks/reduxHooks'
 import { Collection, Project } from '../../redux/Types'
 
 type CManageNavProps = {

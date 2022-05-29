@@ -1,5 +1,5 @@
 import { Control } from 'react-hook-form'
-import { Box, Grid, Typography } from '@mui/material'
+import { Box, Grid } from '@mui/material'
 import {
   MHFTextField,
   MHFLabeledSwitch,
@@ -18,12 +18,13 @@ export const determineSizeAndComponent = (
   switch (type) {
     case 'text':
       return (
-        <Grid item xs={6} key={key}>
+        <Grid item xs={5} key={key}>
           <MHFTextField
             name={name}
             control={control}
             label={name}
             defaultValue={value}
+            fullWidth
           />
         </Grid>
       )
@@ -40,26 +41,28 @@ export const determineSizeAndComponent = (
       )
     case 'datetime':
       return (
-        <Grid item xs={6} key={key}>
+        <Grid item xs={5} key={key}>
           <LocalizationProvider dateAdapter={AdapterMoment}>
             <MHFDatePicker
               name={name}
               control={control}
               label={name}
               defaultValue={value}
+              fullWidth
             />
           </LocalizationProvider>
         </Grid>
       )
     case 'number':
       return (
-        <Grid item xs={6} key={key}>
+        <Grid item xs={5} key={key}>
           <MHFTextField
             name={name}
             control={control}
             label={name}
             defaultValue={value}
             type='number'
+            fullWidth
           />
         </Grid>
       )
@@ -71,7 +74,7 @@ export const determineSizeAndComponent = (
       )
     case 'textbox':
       return (
-        <Grid item xs={8} key={key}>
+        <Grid item xs={11} key={key}>
           <MHFTextField
             name={name}
             control={control}
@@ -85,7 +88,7 @@ export const determineSizeAndComponent = (
       )
     case 'json':
       return (
-        <Grid item xs={8} key={key}>
+        <Grid item xs={11} key={key}>
           <MHFTextField
             name={name}
             control={control}
@@ -99,7 +102,7 @@ export const determineSizeAndComponent = (
       )
     case 'image':
       return (
-        <Grid item xs={12} key={key}>
+        <Grid item xs={11} key={key}>
           <MHFTextField
             name={name}
             control={control}

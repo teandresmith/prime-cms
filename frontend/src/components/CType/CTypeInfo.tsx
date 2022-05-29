@@ -1,7 +1,7 @@
 import { Box, Stack, Typography, Paper, Button } from '@mui/material'
 import { useState } from 'react'
-import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks'
-import { Collection, ContentType } from '../../redux/Types'
+import { useAppSelector } from '../../hooks/reduxHooks'
+import { ContentType } from '../../redux/Types'
 import CTypeDialog from './CTypeDialog'
 
 import TypeCard from './TypeCard'
@@ -14,7 +14,6 @@ type CTypeInfoProps = {
 const CTypeInfo = ({ contentTypes, collectionName }: CTypeInfoProps) => {
   const [open, setOpen] = useState(false)
 
-  const dispatch = useAppDispatch()
   const currentProjectName = useAppSelector(
     (state) => state.cm.currentProjectName
   )
@@ -72,7 +71,7 @@ const CTypeInfo = ({ contentTypes, collectionName }: CTypeInfoProps) => {
             borderBottom: '2px solid rgba(0,0,0,.1)',
           }}
         />
-        <Stack direction='column' justifyContent={'center'} spacing={1}>
+        <Stack direction='column' spacing={1}>
           {contentTypes?.map((value: ContentType, index) => (
             <TypeCard
               key={index}

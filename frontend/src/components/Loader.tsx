@@ -1,9 +1,6 @@
-import React from 'react'
 import { CircularProgress, Box } from '@mui/material'
 
-type Props = {}
-
-const Loader = (props: Props) => {
+const Loader = () => {
   return (
     <Box component='div'>
       <CircularProgress size={50} />

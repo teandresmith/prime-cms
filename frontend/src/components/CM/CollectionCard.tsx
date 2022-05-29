@@ -6,7 +6,7 @@ import { useDeleteCollectionContentDataMutation } from '../../redux/api/projectC
 
 type CollectionCardProps = {
   name: string
-  createdAt: string
+  createdAt: string | number
   id?: string | number
   gridSx?: SxProps<Theme>
   disabled?: boolean
@@ -52,6 +52,12 @@ const CollectionCard = ({
     return input.length >= 20 ? `${input.substring(0, 20)}...` : input
   }
 
+  let dateText = createdAt
+  if (typeof createdAt === 'number') {
+    const date = new Date(createdAt)
+    dateText = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`
+  }
+
   return (
     <Grid container alignItems={'center'} sx={gridSx}>
       <Grid
@@ -69,7 +75,7 @@ const CollectionCard = ({
           {truncate(name)}
         </Grid>
         <Grid item xs={4}>
-          {createdAt}
+          {dateText}
         </Grid>
       </Grid>
       <Grid item xs={1}>

@@ -17,6 +17,7 @@ import { useForm } from 'react-hook-form'
 import { determineSizeAndComponent } from '../../helpers/formHelper'
 import { ContentType, Data } from '../../redux/Types'
 import { useAddCollectionContentDataMutation } from '../../redux/api/projectContentDataAPI'
+import { v4 as uuid } from 'uuid'
 
 type CManageInfoProps = {
   contentData: Array<Data>
@@ -46,15 +47,16 @@ const CManageInfo = ({
   }
 
   const onSubmit = (data: any) => {
-    const id = Math.floor(Math.random() * 100000)
-    const contentData = { id: `${id}`, ...data }
+    const id = uuid().slice(0, 12)
+
+    const contentData = { id: `${id}`, createdAt: Date.now(), ...data }
     addCollectionContentData({
       projectName: currentProjectName,
       collectionName: collectionName,
       contentData: { contentData: contentData },
     })
     for (let i = 0; i < Object.keys(data).length; i++) {
-      methods.setValue(Object.keys(data)[i], '')
+      methods.setValue(Object.keys(data)[i], undefined)
     }
   }
 
@@ -81,7 +83,7 @@ const CManageInfo = ({
           <DialogTitle>{collectionName} Collection - New Entry</DialogTitle>
           <Box component='form' onSubmit={methods.handleSubmit(onSubmit)}>
             <DialogContent>
-              <Grid container rowSpacing={2}>
+              <Grid container rowSpacing={2} columnSpacing={2}>
                 {contentTypes?.map((value: ContentType, index: number) =>
                   determineSizeAndComponent(
                     value.type,
@@ -133,7 +135,7 @@ const CManageInfo = ({
               key={index}
               id={value?.id}
               name={value?.[contentTypes?.[0]?.name] || ''}
-              createdAt=''
+              createdAt={value?.createdAt}
               gridSx={{
                 pl: '16px',
                 pr: '16px',
