@@ -9,6 +9,7 @@ import {
   getProject,
   getProjects,
 } from '../../controllers/project/project'
+import { Authorization } from '../../middleware/auth'
 
 const project = Router()
 

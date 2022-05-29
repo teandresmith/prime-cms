@@ -8,6 +8,7 @@ import CMView from './components/CMView'
 import { useAppDispatch, useAppSelector } from './hooks/reduxHooks'
 import { useEffect, useState } from 'react'
 import { useGetProjectQuery } from './redux/api/projectApi'
+import AuthProvider from './components/AuthProvider'
 
 const App = () => {
   const [skip, setSkip] = useState(true)
@@ -37,23 +38,29 @@ const App = () => {
         width: '100%',
       }}
     >
-      <Routes>
-        <Route path='/' element={<Login />} />
-        <Route
-          path='/content-management'
-          element={<CM project={data?.result} />}
-        />
-        <Route
-          path='/content-management/:id'
-          element={<CMView project={data?.result} />}
-        />
-        <Route path='/settings' element={<Settings project={data?.result} />} />
-        <Route
-          path='/content-type'
-          element={<CType project={data?.result} />}
-        />
-        {/* <Route path='/' index element={() => (<div>404</div>)} */}
-      </Routes>
+      <AuthProvider>
+        <Routes>
+          <Route path='/' element={<Login />} />
+
+          <Route
+            path='/content-management'
+            element={<CM project={data?.result} />}
+          />
+          <Route
+            path='/content-management/:id'
+            element={<CMView project={data?.result} />}
+          />
+          <Route
+            path='/settings'
+            element={<Settings project={data?.result} />}
+          />
+          <Route
+            path='/content-type'
+            element={<CType project={data?.result} />}
+          />
+          {/* <Route path='/' index element={() => (<div>404</div>)} */}
+        </Routes>
+      </AuthProvider>
     </Box>
   )
 }

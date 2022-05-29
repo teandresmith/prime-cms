@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
+import Cookies from 'js-cookie'
 
 const legacyChannelTech = {
   name: 'channel-tech',
@@ -55,6 +56,7 @@ const initialState = {
   currentProjectName: localStorage.getItem('currentProject'),
   currentCollection: localStorage.getItem('currentCollection'),
   channelTech: legacyChannelTech,
+  userToken: Cookies.get('token'),
 }
 
 const cmState = createSlice({
@@ -70,9 +72,13 @@ const cmState = createSlice({
       state.currentCollection = action.payload.collection
       localStorage.setItem('currentCollection', action.payload.collection)
     },
+    setUserToken: (state, action) => {
+      state.userToken = action.payload.token
+    },
   },
 })
 
-export const { setCurrentProjectName, setCurrentCollection } = cmState.actions
+export const { setCurrentProjectName, setCurrentCollection, setUserToken } =
+  cmState.actions
 
 export default cmState.reducer

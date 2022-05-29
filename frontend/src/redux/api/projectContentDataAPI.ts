@@ -1,8 +1,16 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { RootState } from '../store'
 
 export const projectContentDataAPI = createApi({
   reducerPath: 'projectContentDataAPI',
-  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:5000' }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: 'http://localhost:5000',
+    prepareHeaders: (headers, { getState }) => {
+      const token = (getState() as RootState).cm.userToken
+      headers.set('Authorization', `Bearers ${token}`)
+      return headers
+    },
+  }),
   tagTypes: ['ContentData', 'Data'],
   endpoints: (builder) => ({
     getAllCollectionContentData: builder.query({

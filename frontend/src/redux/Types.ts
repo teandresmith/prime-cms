@@ -20,6 +20,17 @@ export type Data = {
   [key: string]: any
 }
 
+export type User = {
+  email: string
+  password: string
+  token: string
+}
+
+export type LoginResponse = {
+  message: string
+  result?: User
+}
+
 export type ProjectResponse = {
   message: string
   result: Project
