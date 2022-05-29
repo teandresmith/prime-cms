@@ -52,7 +52,7 @@ export const projectAPI = createApi({
 
     editProjectCollection: builder.mutation({
       query: ({ project, collection, collectionName }) => ({
-        url: `/api/${project}/collection/${collectionName}`,
+        url: `/api/project/${project}/collection/${collectionName}`,
         method: 'PATCH',
         body: collection,
       }),
@@ -61,7 +61,7 @@ export const projectAPI = createApi({
 
     deleteProjectCollection: builder.mutation({
       query: ({ project, collectionName }) => ({
-        url: `/api/${project}/collection/${collectionName}`,
+        url: `/api/project/${project}/collection/${collectionName}`,
         method: 'DELETE',
       }),
       invalidatesTags: ['Project'],

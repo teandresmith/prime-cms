@@ -1,6 +1,12 @@
 import { Control } from 'react-hook-form'
-import { Grid } from '@mui/material'
-import { MHFTextField, MHFLabeledSwitch } from 'mui-hook-form-mhf'
+import { Box, Grid, Typography } from '@mui/material'
+import {
+  MHFTextField,
+  MHFLabeledSwitch,
+  MHFDatePicker,
+} from 'mui-hook-form-mhf'
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
+import { LocalizationProvider } from '@mui/x-date-pickers'
 
 export const determineSizeAndComponent = (
   type: string,
@@ -11,7 +17,6 @@ export const determineSizeAndComponent = (
 ) => {
   switch (type) {
     case 'text':
-    case 'string':
       return (
         <Grid item xs={6} key={key}>
           <MHFTextField
@@ -36,12 +41,14 @@ export const determineSizeAndComponent = (
     case 'datetime':
       return (
         <Grid item xs={6} key={key}>
-          <MHFTextField
-            name={name}
-            control={control}
-            label={name}
-            defaultValue={value}
-          />
+          <LocalizationProvider dateAdapter={AdapterMoment}>
+            <MHFDatePicker
+              name={name}
+              control={control}
+              label={name}
+              defaultValue={value}
+            />
+          </LocalizationProvider>
         </Grid>
       )
     case 'number':
@@ -56,24 +63,61 @@ export const determineSizeAndComponent = (
           />
         </Grid>
       )
-    case 'image':
+    case 'file':
       return (
-        <Grid item xs={10} key={key}>
+        <Grid item xs={5} key={key}>
+          <MHFTextField name={name} control={control} type='file' />
+        </Grid>
+      )
+    case 'textbox':
+      return (
+        <Grid item xs={8} key={key}>
           <MHFTextField
             name={name}
             control={control}
             label={name}
-            type='file'
+            defaultValue={value}
+            multiline
+            fullWidth
+            rows={12}
           />
         </Grid>
       )
-    case 'textfield':
+    case 'json':
       return (
-        <Grid item xs={10} key={key}>
-          <MHFTextField name={name} control={control} label={name} multiline />
+        <Grid item xs={8} key={key}>
+          <MHFTextField
+            name={name}
+            control={control}
+            label={`${name} - JSON Object/Array`}
+            defaultValue={value ? JSON.stringify(value, undefined, 4) : ''}
+            multiline
+            fullWidth
+            rows={12}
+          />
         </Grid>
       )
-
+    case 'image':
+      return (
+        <Grid item xs={12} key={key}>
+          <MHFTextField
+            name={name}
+            control={control}
+            label={name}
+            defaultValue={value}
+            fullWidth
+            type='url'
+          />
+          <br />
+          {value !== undefined && (
+            <Box
+              component={'img'}
+              src={value}
+              sx={{ height: 400, objectFit: 'contain', pt: 1 }}
+            />
+          )}
+        </Grid>
+      )
     default:
       return 6
   }

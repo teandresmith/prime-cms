@@ -8,7 +8,6 @@ import CMView from './components/CMView'
 import { useAppDispatch, useAppSelector } from './hooks/reduxHooks'
 import { useEffect, useState } from 'react'
 import { useGetProjectQuery } from './redux/api/projectApi'
-import { setProject } from './redux/states/cmState'
 
 const App = () => {
   const [skip, setSkip] = useState(true)
@@ -21,8 +20,12 @@ const App = () => {
   const dispatch = useAppDispatch()
 
   useEffect(() => {
-    if (currentProjectName !== null) {
+    if (currentProjectName !== null && currentProjectName !== 'channel-tech') {
       setSkip(false)
+    }
+
+    if (currentProjectName === 'channel-tech') {
+      setSkip(true)
     }
   }, [currentProjectName, dispatch])
 
@@ -44,7 +47,7 @@ const App = () => {
           path='/content-management/:id'
           element={<CMView project={data?.result} />}
         />
-        <Route path='/settings' element={<Settings />} />
+        <Route path='/settings' element={<Settings project={data?.result} />} />
         <Route
           path='/content-type'
           element={<CType project={data?.result} />}

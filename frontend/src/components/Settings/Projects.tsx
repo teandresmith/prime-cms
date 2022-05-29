@@ -10,9 +10,8 @@ import {
   DialogActions,
   DialogTitle,
 } from '@mui/material'
-import { useEffect, useState } from 'react'
-import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks'
-import { setCurrentProjectName } from '../../redux/states/cmState'
+import { useState } from 'react'
+import { useAppSelector } from '../../hooks/reduxHooks'
 import { MHFTextField } from 'mui-hook-form-mhf'
 import { useForm } from 'react-hook-form'
 import {
@@ -21,12 +20,18 @@ import {
 } from '../../redux/api/projectApi'
 import ProjectCard from './ProjectCard'
 import Loader from '../Loader'
+import { Collection, Project } from '../../redux/Types'
+import CollCard from './CollCard'
 
 type FormData = {
   name: string
 }
 
-const Projects = () => {
+type ProjectsProps = {
+  project?: Project
+}
+
+const Projects = ({ project }: ProjectsProps) => {
   const methods = useForm<FormData>()
   const [open, setOpen] = useState(false)
   const [dialogOpen, setDialogOpen] = useState(false)
@@ -35,12 +40,6 @@ const Projects = () => {
   const [addProject] = useAddProjectMutation()
 
   const currentProject = useAppSelector((state) => state.cm.currentProjectName)
-  const dispatch = useAppDispatch()
-
-  const handleProjectClick = (value: string) => {
-    dispatch(setCurrentProjectName({ project: value }))
-    setOpen(true)
-  }
 
   const handleClose = () => {
     setOpen(false)
@@ -139,7 +138,21 @@ const Projects = () => {
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
       />
 
-      <Box component='div'></Box>
+      <Box component='div' sx={{ pt: 3 }}>
+        {project && (
+          <Typography variant='h6' sx={{ pb: 2 }}>
+            Current selected project collections
+          </Typography>
+        )}
+        <Grid container rowGap={1} columnGap={1}>
+          {project &&
+            project?.collections?.map((value: Collection, index: number) => (
+              <Grid item xs={3} key={index}>
+                <CollCard name={value?.name} />
+              </Grid>
+            ))}
+        </Grid>
+      </Box>
     </Box>
   )
 }

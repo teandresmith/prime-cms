@@ -68,12 +68,13 @@ const CTypeDialog = ({ handleClose, open }: CTypeDialogProps) => {
                 labelId='type-label'
                 selectItemList={[
                   'text',
-                  'string',
                   'datetime',
                   'image',
                   'file',
                   'boolean',
                   'number',
+                  'json',
+                  'textbox',
                 ]}
                 fullWidth
               />

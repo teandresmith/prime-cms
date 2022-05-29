@@ -48,6 +48,10 @@ const CollectionCard = ({
     }
   }
 
+  const truncate = (input: string) => {
+    return input.length >= 20 ? `${input.substring(0, 20)}...` : input
+  }
+
   return (
     <Grid container alignItems={'center'} sx={gridSx}>
       <Grid
@@ -62,7 +66,7 @@ const CollectionCard = ({
           {id}
         </Grid>
         <Grid item xs={4}>
-          {name}
+          {truncate(name)}
         </Grid>
         <Grid item xs={4}>
           {createdAt}

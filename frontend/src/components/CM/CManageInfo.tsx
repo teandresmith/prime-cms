@@ -133,7 +133,7 @@ const CManageInfo = ({
               key={index}
               id={value?.id}
               name={value?.[contentTypes?.[0]?.name] || ''}
-              createdAt='May 12, 1800'
+              createdAt=''
               gridSx={{
                 pl: '16px',
                 pr: '16px',

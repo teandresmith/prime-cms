@@ -34,6 +34,12 @@ const CMViewInfo = ({ data, contentTypes }: CMViewInfoProps) => {
 
   const onSubmit = (data: any) => {
     const id = params?.id
+
+    const json = checkForJSON()
+    if (json !== undefined) {
+      data[json.name] = JSON.parse(data[json.name])
+    }
+
     const contentData = { id, ...data }
     editCollectionContentData({
       projectName: currentProjectName,
@@ -41,6 +47,13 @@ const CMViewInfo = ({ data, contentTypes }: CMViewInfoProps) => {
       contentData: { contentData: contentData },
       contentId: id,
     })
+  }
+
+  const checkForJSON = () => {
+    const json = contentTypes?.find(
+      (value: ContentType) => value.type === 'json'
+    )
+    return json
   }
 
   const handleDeleteClick = () => {
@@ -68,7 +81,7 @@ const CMViewInfo = ({ data, contentTypes }: CMViewInfoProps) => {
           </Typography>
         </Box>
 
-        <Paper elevation={4} component='div' sx={{ mt: 3, p: 1 }}>
+        <Paper elevation={4} component='div' sx={{ mt: 3, p: 1, mb: 3 }}>
           <Box component='form' onSubmit={methods.handleSubmit(onSubmit)}>
             <Grid
               container
