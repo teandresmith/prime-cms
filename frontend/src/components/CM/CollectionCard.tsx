@@ -39,7 +39,7 @@ const CollectionCard = ({
   }
 
   const handleDeleteEntry = () => {
-    if (window.confirm(`Delete Entry - ID: ${id}?`) == true) {
+    if (window.confirm(`Delete Entry - ID: ${id}?`) === true) {
       deleteCollectionContentData({
         projectName: currentProjectName,
         collectionName: currentCollection,

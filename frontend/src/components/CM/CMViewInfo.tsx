@@ -79,7 +79,9 @@ const CMViewInfo = ({ data, contentTypes }: CMViewInfoProps) => {
   const handleDeleteClick = () => {
     const id = params?.id
 
-    if (window.confirm('Do you want to delete this collection item?') == true) {
+    if (
+      window.confirm('Do you want to delete this collection item?') === true
+    ) {
       deleteCollectionContentData({
         projectName: currentProjectName,
         collectionName: currentCollection,

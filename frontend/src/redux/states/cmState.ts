@@ -73,10 +73,6 @@ const cmState = createSlice({
   },
 })
 
-function hasKey<O>(obj: O, key: PropertyKey): key is keyof O {
-  return key in obj
-}
-
 export const { setCurrentProjectName, setCurrentCollection } = cmState.actions
 
 export default cmState.reducer

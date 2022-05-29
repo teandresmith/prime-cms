@@ -1,7 +1,11 @@
 import { Router } from 'express'
+import { login, register, test } from '../controllers/login'
+import { Authorization } from '../middleware/auth'
 
-const login = Router()
+const signIn = Router()
 
-login.post('/login')
+signIn.post('/login', login)
+signIn.post('/register', register)
+signIn.get('/test', Authorization, test)
 
-export default login
+export default signIn

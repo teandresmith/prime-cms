@@ -10,4 +10,11 @@ export const options = {
   ADD_SUCCESS: 'Insertion Successful!',
   UPDATE_SUCCESS: 'Update Successful!',
   DELETE_SUCCESS: 'Deletion Successful!',
+  LOGIN_SUCCESS: 'Login Successful!',
+  LOGIN_FAILED: 'Login Failed',
+  REGISTER_SUCCESS: 'Register Success',
+  REGISTER_FAILED: 'Register Failed',
+  NO_TOKEN: 'No Token Provided',
+  INVALID_TOKEN: 'Token is invalid',
+  NO_AUTH: 'User not authorized to access this asset.',
 }

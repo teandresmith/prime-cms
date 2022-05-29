@@ -21,7 +21,7 @@ const TypeCard = ({ name, type, gridSx, disabled }: TypeCardProps) => {
   const [deleteCollectionContentType] = useDeleteCollectionContentTypeMutation()
 
   const handleDeleteType = () => {
-    if (window.confirm(`Delete ${name} type?`) == true) {
+    if (window.confirm(`Delete ${name} type?`) === true) {
       deleteCollectionContentType({
         projectName: currentProjectName,
         collectionName: currentCollection,

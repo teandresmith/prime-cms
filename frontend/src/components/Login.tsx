@@ -1,17 +1,15 @@
 import { Box, Button, Stack, Typography } from '@mui/material'
 import { useForm } from 'react-hook-form'
 import { MHFTextField } from 'mui-hook-form-mhf'
+import axios from 'axios'
 
 type FormData = {
   email: string
   password: string
 }
 
-type Props = {}
-
-const Login = (props: Props) => {
+const Login = () => {
   const methods = useForm<FormData>()
-
   const imageUrl =
     'https://images.unsplash.com/photo-1507237998874-b4d52d1dd655?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2560&q=80'
 
