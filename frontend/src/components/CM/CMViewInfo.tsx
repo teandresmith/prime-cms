@@ -51,7 +51,6 @@ const CMViewInfo = ({ data, contentTypes }: CMViewInfoProps) => {
       try {
         formData[json.name] = JSON.parse(formData[json.name])
       } catch (error) {
-        console.log(error)
         methods.setError(json.name, { type: 'focus' }, { shouldFocus: true })
         return
       }

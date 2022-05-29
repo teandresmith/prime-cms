@@ -49,6 +49,16 @@ const CManageInfo = ({
   const onSubmit = (data: any) => {
     const id = uuid().slice(0, 12)
 
+    const json = checkForJSON()
+    if (json !== undefined && data[json.name] !== '') {
+      try {
+        data[json.name] = JSON.parse(data[json.name])
+      } catch (error) {
+        methods.setError(json.name, { type: 'focus' }, { shouldFocus: true })
+        return
+      }
+    }
+
     const contentData = { id: `${id}`, createdAt: Date.now(), ...data }
     addCollectionContentData({
       projectName: currentProjectName,
@@ -58,6 +68,13 @@ const CManageInfo = ({
     for (let i = 0; i < Object.keys(data).length; i++) {
       methods.setValue(Object.keys(data)[i], undefined)
     }
+  }
+
+  const checkForJSON = () => {
+    const json = contentTypes?.find(
+      (value: ContentType) => value.type === 'json'
+    )
+    return json
   }
 
   return (
