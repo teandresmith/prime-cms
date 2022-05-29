@@ -16,13 +16,14 @@ export const Authorization = async (
     return
   }
 
-  token = token?.replace('Bearers ', '')
-  if (!verifyToken(token)) {
-    res.status(401).json({ message: options.INVALID_TOKEN })
-    return
-  }
-
   try {
+    token = token?.replace('Bearers ', '')
+    const verify = await verifyToken(token)
+
+    if (!verify) {
+      res.status(401).json({ message: options.INVALID_TOKEN })
+      return
+    }
     const user: Login = await LoginModel.findOne({ token: token })
 
     if (!user) {

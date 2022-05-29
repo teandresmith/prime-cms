@@ -16,7 +16,7 @@ const App = () => {
     (state) => state.cm.currentProjectName
   )
 
-  const { data } = useGetProjectQuery(currentProjectName, { skip: skip })
+  const { data, error } = useGetProjectQuery(currentProjectName, { skip: skip })
 
   const dispatch = useAppDispatch()
 

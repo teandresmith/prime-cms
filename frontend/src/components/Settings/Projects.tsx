@@ -10,7 +10,7 @@ import {
   DialogActions,
   DialogTitle,
 } from '@mui/material'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useAppSelector } from '../../hooks/reduxHooks'
 import { MHFTextField } from 'mui-hook-form-mhf'
 import { useForm } from 'react-hook-form'
@@ -22,6 +22,9 @@ import ProjectCard from './ProjectCard'
 import Loader from '../Loader'
 import { Collection, Project } from '../../redux/Types'
 import CollCard from './CollCard'
+import { checkError } from '../../helpers/errorHandler'
+import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query'
+import { useNavigate } from 'react-router-dom'
 
 type FormData = {
   name: string
@@ -36,7 +39,9 @@ const Projects = ({ project }: ProjectsProps) => {
   const [open, setOpen] = useState(false)
   const [dialogOpen, setDialogOpen] = useState(false)
 
-  const { data, isLoading } = useGetProjectsQuery('')
+  const navigate = useNavigate()
+
+  const { data, isLoading, error } = useGetProjectsQuery('')
   const [addProject] = useAddProjectMutation()
 
   const currentProject = useAppSelector((state) => state.cm.currentProjectName)
@@ -58,6 +63,10 @@ const Projects = ({ project }: ProjectsProps) => {
   const handleDialogOpen = () => {
     setDialogOpen(true)
   }
+
+  useEffect(() => {
+    checkError(error as FetchBaseQueryError, navigate)
+  }, [error])
 
   return (
     <Box
