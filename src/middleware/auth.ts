@@ -31,7 +31,7 @@ export const Authorization = async (
       return
     }
   } catch (error) {
-    console.log(error)
+    console.error(error)
     res.status(401).json({ message: options.NO_AUTH })
     return
   }

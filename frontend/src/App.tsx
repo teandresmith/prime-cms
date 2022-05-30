@@ -1,14 +1,12 @@
+import { useEffect, useState } from 'react'
 import { Box } from '@mui/material'
 import { Routes, Route } from 'react-router-dom'
-import Login from './components/Login'
-import CM from './components/CM'
-import Settings from './components/Settings'
-import CType from './components/CType'
-import CMView from './components/CMView'
+import { Login, CM, Settings, CType, CMView, AuthProvider } from './components'
+import { useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from './hooks/reduxHooks'
-import { useEffect, useState } from 'react'
 import { useGetProjectQuery } from './redux/api/projectApi'
-import AuthProvider from './components/AuthProvider'
+import { checkError } from './helpers/errorHandler'
+import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query'
 
 const App = () => {
   const [skip, setSkip] = useState(true)
@@ -19,6 +17,7 @@ const App = () => {
   const { data, error } = useGetProjectQuery(currentProjectName, { skip: skip })
 
   const dispatch = useAppDispatch()
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (currentProjectName !== null && currentProjectName !== 'channel-tech') {
@@ -28,7 +27,11 @@ const App = () => {
     if (currentProjectName === 'channel-tech') {
       setSkip(true)
     }
-  }, [currentProjectName, dispatch])
+
+    if (error) {
+      checkError(error as FetchBaseQueryError, navigate)
+    }
+  }, [currentProjectName, dispatch, error, navigate])
 
   return (
     <Box
