@@ -64,7 +64,3 @@ export const register = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Register Failed', error: error })
   }
 }
-
-export const test = async (req: Request, res: Response) => {
-  res.status(200).json({ message: 'hello' })
-}

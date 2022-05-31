@@ -11,6 +11,7 @@ export const checkError = (
     (error?.data as { message: string }).message === 'Token is invalid'
   ) {
     Cookies.remove('token')
-    navigate('/')
+    localStorage.removeItem('currentProject')
+    localStorage.removeItem('currentCollection')
   }
 }

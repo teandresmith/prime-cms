@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useAppSelector } from '../hooks/reduxHooks'
+import Cookies from 'js-cookie'
 
 type AuthProviderProps = {
   children: any
@@ -12,10 +13,10 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const location = useLocation()
 
   useEffect(() => {
-    if (location.pathname !== '/' && !userToken) {
+    if (location.pathname !== '/' && (!userToken || !Cookies.get('token'))) {
       navigate('/')
     }
-  }, [userToken])
+  }, [userToken, location, navigate])
   return children
 }
 
